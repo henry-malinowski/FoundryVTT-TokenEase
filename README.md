@@ -1,6 +1,6 @@
 # Token Ease
 
-![Custom movement easing and speed](images/token-ease.gif)
+![Custom movement easing and speed](images/token-ease.webp)
 
 ---
 
