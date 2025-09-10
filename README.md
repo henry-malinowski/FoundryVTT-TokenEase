@@ -1,7 +1,3 @@
-# Notice - Due to a decision made by the Foundry devs, Token Ease is no longer able to function in Foundry v13 and beyond
-
-[Please read more here](https://github.com/fantasycalendar/FoundryVTT-TokenEase/issues/21).
-
 # Token Ease
 
 ![Custom movement easing and speed](images/token-ease.gif)
@@ -37,13 +33,14 @@ No more will you suffer the lethargic slog of transporting tokens across the can
 
 ## Credits
 
-* Kerrec Snowmane for his implementation of the hooks
+* Kerrec Snowmane for his initial implementation of the hooks
 * League of Extraordinary FoundryVTT Developers
 * [Easing Functions Cheat Sheet](https://easings.net/) ([GitHub](https://github.com/ai/easings.net)) - Copyright © 2020 Andrey Sitnik and Ivan Solovev
+* Henry Malinowski for updating the module to support FoundryVTT Version 13
 
 ## Download Here:
 
-`https://github.com/fantasycalendar/FoundryVTT-TokenEase/releases/latest/download/module.json`
+`https://github.com/henry-malinowski/FoundryVTT-TokenEase/releases/latest/download/module.json`
 
 
 ## Module Settings
@@ -86,35 +83,17 @@ If enabled, this will make moving tokens with the movement keys (arrow keys, etc
 
 We do not recommend enabling this, as the movement distance is so short when using movement keys.
 
+### Play animation on keypad movement
+
+#### Default: True
+
+If enabled, movement speed usually applied by Foundry for certain movement modes will be applied along with adjustments to speed from this modules. (i.e. moving at half speed when movement is set to crawl.)
+
 ## Token Settings
 
 Each token can override the module's default movement animation settings.
 
 ![Token settings](images/token_settings.png)
-
-## API
-
-### `TokenDocument#update`
-
-As of Foundry v10, this natively accepts an additional optional parameter in its second parameter called `animation`:
-
-```js
-token.document.update({
-     x: ..., y: ...
-}, {animate: true, animation: { movementSpeed: 10, duration: 0, easing: "linear" }})
-```
-
-| Param         | Type | Default |
-|---------------| --- | --- |
-| movementSpeed | <code>number</code> | `10` |
-| duration      | <code>number</code> | `0` |
-| easing        | <code>string</code> | `linear` |
-
-If `speed` or `duration` is given in the `animation` parameter, it will override the settings (see [module settings](#module-settings)).
-
-If `duration` is provided, `speed` has no impact on the animation, as the token will reach the destination within the given duration.
-
-If you change `easing`, it is recommended you use the ones below.
 
 ---
 

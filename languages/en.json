@@ -9,8 +9,9 @@
     "TOKEN-EASE.ease-type-description": "Sets the type of easing to use at the start/end of the animation. If Token Movement Ease is set to Linear, this has no impact.",
     "TOKEN-EASE.movement-keys-title": "Play animation on keypad movement",
     "TOKEN-EASE.movement-keys-description": "If enabled, this will make moving tokens with the movement keys (arrow keys, etc) to play the animations configured above. We do not recommend enabling this, as the movement distance is so short when using movement keys.",
-
-    "TOKEN-EASE.override": "Override Token-Ease default settings for this token",
+    "TOKEN-EASE.apply-foundry-movespeed-adjustments-title": "Apply Foundry's animation speed adjustments",
+    "TOKEN-EASE.apply-foundry-movespeed-adjustments-description": "If enabled, animation speed penalties (i.e. for crawling) will be applied.",
+    "TOKEN-EASE.override": "Override default settings",
 
     "TOKEN-EASE.instant-movement": "Instant Movement Hotkey (hold)"
 }

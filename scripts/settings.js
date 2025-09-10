@@ -1,6 +1,10 @@
 import { easeFunctions } from "./lib/ease.js";
+const {debounce} = foundry.utils;
 
-const easeChoices = Object.keys(easeFunctions).filter(ease => ease.indexOf("InOut") > -1).map((e) => e.replace("easeInOut", ""));
+const easeChoices = Object.keys(easeFunctions)
+	.filter(ease => ease.indexOf("InOut") > -1)
+	.map((e) => e.replace("easeInOut", ""));
+	
 easeChoices.unshift("Linear")
 const debouncedDoubleCheckEase = debounce(() => {
 	let easeInOut = game.settings.get("token-ease", "ease-type");
@@ -85,6 +89,15 @@ export function configure_settings() {
 		type: Boolean
 	});
 
+	
+	game.settings.register("token-ease", "apply-foundry-movespeed-adjustments", {
+		name: game.i18n.format("TOKEN-EASE.apply-foundry-movespeed-adjustments-title"),
+		hint: game.i18n.format("TOKEN-EASE.apply-foundry-movespeed-adjustments-description"),
+		scope: "world",
+		config: true,
+		default: false,
+		type: Boolean
+	});
 }
 
 export const keyboardState = {

@@ -1,0 +1,47 @@
+<div class="token-ease">
+	<div class="form-group slim">
+		<label for="{{partId}}-token-ease-enabled">{{localize "TOKEN-EASE.override"}}</label>
+		<div class="form-fields">
+			<input id="{{partId}}-token-ease-enabled" type="checkbox" name="flags.token-ease.movement.enabled" {{checked settings.enabled}} />
+		</div>
+	</div>
+
+	<fieldset data-token-ease-fields {{disabled (not settings.enabled)}}>
+
+		<div class="form-group slim">
+			<label for="{{partId}}-token-ease-speed">{{localize "TOKEN-EASE.speed-title"}}</label>
+			<div class="form-fields">
+				<input id="{{partId}}-token-ease-speed" type="number" name="flags.token-ease.movement.speed" value="{{settings.speed}}" data-dtype="Number" min="0" step="1" autofocus />
+			</div>
+			<p class="hint">{{localize "TOKEN-EASE.speed-description"}}</p>
+		</div>
+
+		<div class="form-group slim">
+			<label for="{{partId}}-token-ease-duration">{{localize "TOKEN-EASE.duration-title"}}</label>
+			<div class="form-fields">
+				<input id="{{partId}}-token-ease-duration" type="number" name="flags.token-ease.movement.duration" value="{{settings.duration}}" data-dtype="Number" min="0" />
+			</div>
+			<p class="hint">{{localize "TOKEN-EASE.duration-description"}}</p>
+		</div>
+
+		<div class="form-group slim">
+			<label for="{{partId}}-token-ease-ease">{{localize "TOKEN-EASE.ease-title"}}</label>
+			<div class="form-fields">
+				<select id="{{partId}}-token-ease-ease" name="flags.token-ease.movement.configEase">
+					{{selectOptions easeChoices selected=settings.configEase}}
+				</select>
+			</div>
+			<p class="hint">{{localize "TOKEN-EASE.ease-description"}}</p>
+		</div>
+
+		<div class="form-group slim">
+			<label for="{{partId}}-token-ease-ease-type">{{localize "TOKEN-EASE.ease-type-title"}}</label>
+			<div class="form-fields">
+				<select id="{{partId}}-token-ease-ease-type" name="flags.token-ease.movement.configInOut">
+					{{selectOptions inOutChoices selected=settings.configInOut}}
+				</select>
+			</div>
+			<p class="hint">{{localize "TOKEN-EASE.ease-type-description"}}</p>
+		</div>
+	</fieldset>
+</div>

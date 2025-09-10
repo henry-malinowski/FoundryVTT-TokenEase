@@ -1,80 +1,120 @@
 import CONSTANTS from "./constants.js";
 import { easeFunctions } from "./lib/ease.js";
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class TokenEaseConfig extends FormApplication {
+// Precompute choice lists once at module load time
+const DEFAULT_MOVEMENT = Object.freeze({
+	enabled: false,
+	speed: 6,
+	duration: 0,
+	configEase: "Linear",
+	configInOut: "InOut"
+});
+
+const EASE_LABELS = (() => {
+	const labels = Object.keys(easeFunctions)
+		.filter(ease => ease.indexOf("InOut") > -1)
+		.map((e) => e.replace("easeInOut", ""));
+	labels.unshift("Linear");
+	return labels;
+})();
+
+const EASE_CHOICES = EASE_LABELS.reduce((acc, label) => {
+	acc[label] = label;
+	return acc;
+}, {});
+
+const IN_OUT_CHOICES = {
+	"In": "In",
+	"Out": "Out",
+	"InOut": "InOut"
+};
+
+export default class TokenEaseConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
 	/**
-	 * @param {Object} token
+	 * @param {TokenDocument|PrototypeToken} token
 	 */
 	constructor(token) {
 		super();
 		this.token = token;
-		this.data = token.getFlag(CONSTANTS.MODULE_NAME, CONSTANTS.MOVEMENT_FLAG);
-		if (!this.data) {
-			this.data = {
-				speed: game.settings.get(CONSTANTS.MODULE_NAME, "default-speed"),
-				duration: game.settings.get(CONSTANTS.MODULE_NAME, "default-duration"),
-				configEase: game.settings.get(CONSTANTS.MODULE_NAME, "default-ease"),
-				configInOut: game.settings.get(CONSTANTS.MODULE_NAME, "ease-type")
-			}
-		}
+		this.data = this.#readExistingData(token);
 	}
 
-	/** @inheritdoc */
-	static get defaultOptions() {
-		return foundry.utils.mergeObject(super.defaultOptions, {
+	static DEFAULT_OPTIONS = {
+		tag: "form",
+		classes: ["sheet", "token-ease-config"],
+		window: {
+			contentClasses: ["standard-form"],
 			title: "Token-Ease Token Overrides",
-			classes: ["sheet", "item-pile-filters-editor"],
-			template: `modules/token-ease/templates/token-ease-config.html`,
-			width: 400,
-			resizable: false
+			icon: "fa-solid fa-person-running"
+		},
+		position: { width: 400 },
+		form: {
+			closeOnSubmit: true,
+			handler: TokenEaseConfig.#onSubmit
+		}
+	};
+
+	static PARTS = {
+		body: { template: `modules/token-ease/templates/prototype-token-ease.hbs`, scrollable: [""] },
+		footer: { template: "templates/generic/form-footer.hbs" }
+	};
+
+	async _prepareContext(options) {
+		const context = await super._prepareContext(options) ?? {};
+		const settings = { ...this.data };
+		return Object.assign(context, {
+			rootId: this.id,
+			settings,
+			easeChoices: EASE_CHOICES,
+			inOutChoices: IN_OUT_CHOICES,
+			buttons: this.#prepareButtons()
 		});
 	}
 
-	static show(token) {
-		for (let app of Object.values(ui.windows)) {
-			if (app instanceof this && app?.token === token) {
-				return app.render(false, { focus: true });
-			}
+	async _onRender(context, options) {
+		await super._onRender(context, options);
+		const checkbox = this.element?.querySelector('input[name="flags.token-ease.movement.enabled"]');
+		const fieldset = this.element?.querySelector('fieldset[data-token-ease-fields]');
+		if (checkbox && fieldset) {
+			fieldset.disabled = !checkbox.checked;
+			checkbox.addEventListener("change", () => {
+				fieldset.disabled = !checkbox.checked;
+			});
 		}
-		return new this(token).render(true);
 	}
 
-	getData(options) {
-		const data = super.getData(options)
-
-		data.settings = this.data;
-
-		const easeChoices = Object.keys(easeFunctions).filter(ease => ease.indexOf("InOut") > -1).map((e) => e.replace("easeInOut", ""));
-		easeChoices.unshift("Linear")
-
-		data.easeChoices = easeChoices.reduce((acc, e) => {
-			acc[e] = e;
-			return acc
-		}, {});
-
-		data.inOutChoices = {
-			"In": "In",
-			"Out": "Out",
-			"InOut": "InOut"
-		}
-
-		return data;
+	#prepareButtons() {
+		return [
+			{ type: "submit", icon: "fa-solid fa-floppy-disk", label: "Update Token" }
+		];
 	}
 
-	async _updateObject(event, formData) {
+	#readExistingData(token) {
+		const existing = token.getFlag(CONSTANTS.MODULE_NAME, CONSTANTS.MOVEMENT_FLAG);
+		return existing ?? { ...DEFAULT_MOVEMENT };
+	}
 
-		if (event.submitter.value === "0") return;
+	/**
+	 * Form submit handler for ApplicationV2.
+	 * @this {TokenEaseConfig}
+	 */
+	static async #onSubmit(event, form, formData) {
+		if (event.type !== "submit") return;
 
-		if (!formData.enabled) {
+		// Expand values and pluck movement object from nested flags
+		const expanded = foundry.utils.expandObject(formData.object);
+		const movement = expanded.flags[CONSTANTS.MODULE_NAME][CONSTANTS.MOVEMENT_FLAG];
+
+		if (!movement.enabled) {
 			return this.token.unsetFlag(CONSTANTS.MODULE_NAME, CONSTANTS.MOVEMENT_FLAG);
 		}
 
-		formData.ease = formData["configEase"] === "Linear"
-			? formData["configEase"]
-			: "ease" + formData["configInOut"] + formData["configEase"];
+		movement.ease = movement.configEase === "Linear"
+			? "linear"
+			: `ease${movement.configInOut}${movement.configEase}`;
 
-		return this.token.setFlag(CONSTANTS.MODULE_NAME, CONSTANTS.MOVEMENT_FLAG, formData);
+		return this.token.setFlag(CONSTANTS.MODULE_NAME, CONSTANTS.MOVEMENT_FLAG, movement);
 	}
-
 }

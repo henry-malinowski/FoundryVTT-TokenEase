@@ -4,6 +4,11 @@
   "description": "This module enhances native Foundry behavior by exposing easing, custom movement speed, and movement duration in the token configuration.",
   "authors": [
     {
+      "name": "Henry Malinowski",
+      "url": "https://github.com/henry-malinowski",
+      "discord": "hmalinowski"
+    },
+    {
       "name": "Wasp",
       "url": "https://github.com/Haxxer",
       "discord": "Wasp#2005"
@@ -14,11 +19,11 @@
       "discord": "Kerrec Snowmane#5264"
     }
   ],
-  "version": "1.2.0",
+  "version": "1.4.0",
   "compatibility": {
-    "minimum": "11",
-    "verified": "12",
-    "maximum": "12"
+    "minimum": "13",
+    "verified": "13.348",
+    "maximum": "13"
   },
   "esmodules": [
     "/scripts/module.js"
@@ -30,7 +35,7 @@
       "path": "/languages/en.json"
     }
   ],
-  "url": "https://github.com/fantasycalendar/FoundryVTT-TokenEase",
-  "manifest": "https://github.com/fantasycalendar/FoundryVTT-TokenEase/releases/latest/download/module.json",
-  "download": "https://github.com/fantasycalendar/FoundryVTT-TokenEase/releases/download/1.2.0/module.zip"
+  "url": "https://github.com/henry-malinowski/FoundryVTT-TokenEase",
+  "manifest": "https://github.com/henry-malinowski/FoundryVTT-TokenEase/releases/latest/download/module.json",
+  "download": "https://github.com/henry-malinowski/FoundryVTT-TokenEase/releases/download/1.4.0/module.zip"
 }
